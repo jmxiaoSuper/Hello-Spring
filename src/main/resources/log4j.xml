@@ -12,7 +12,7 @@
 		<!--日记记录的优先级priority，优先级由高到低分为 OFF ,FATAL ,ERROR ,WARN ,INFO ,DEBUG ,ALL。 
 			Log4j建议只使用FATAL ,ERROR ,WARN ,INFO ,DEBUG这五个级别 -->
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
-			<param name="levelMin" value="debug" />
+			<param name="levelMin" value="info" />
 			<param name="levelMax" value="error" />
 			<param name="AcceptOnMatch" value="true" />
 		</filter>
@@ -35,26 +35,18 @@
 		<level class="org.apache.log4j.Level" value="debug" />
 		<appender-ref ref="outputConsole" />
 	</logger>
-	
-	<logger name="com.xquant" additivity="false">
-		<level class="org.apache.log4j.Level" value="debug" />
-		<appender-ref ref="outputConsole" />
-		<appender-ref ref="outputFile" />
-	</logger>
-	<logger name="controllers" additivity="false">
-		<level class="org.apache.log4j.Level" value="debug" />
-		<appender-ref ref="outputConsole" />
-		<appender-ref ref="outputFile" />
-	</logger>
-	<logger name="javascript" additivity="false">
-		<level class="org.apache.log4j.Level" value="debug" />
+
+	<logger name="com.hello.spring" additivity="false" >
+		<level value="debug" class="org.apache.log4j.Level"/>
 		<appender-ref ref="outputConsole" />
 		<appender-ref ref="outputFile" />
 	</logger>
 
+
 	<root>
-		<priority value="debug" />
+		<priority value="info" />
 		<appender-ref ref="outputConsole" />
+
 	</root>
 
 </log4j:configuration>
