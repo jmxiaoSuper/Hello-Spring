@@ -10,14 +10,20 @@
 	http://www.springframework.org/schema/aop
 	http://www.springframework.org/schema/aop/spring-aop-3.2.xsd">
 
-    
+	<bean id="propertyConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+		<property name="locations">
+			<list>
+				<value>classpath: something.properties</value>
+			</list>
+		</property>
+	</bean>
 
 	<!--
 	<import resource="classpath*:/appContext-component.xml"/>
 	<import resource="classpath*:/appContext-component-javascript.xml"/>
-
-	<import resource="classpath*:/appContext-component-db.xml"/>
 	-->
+	<import resource="classpath*:/appContext-component-db.xml"/>
+
 
 	<bean class="org.mybatis.spring.mapper.MapperScannerConfigurer">
 		<property name="annotationClass" value="org.springframework.stereotype.Repository" />
