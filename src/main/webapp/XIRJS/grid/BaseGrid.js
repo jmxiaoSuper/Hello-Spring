@@ -87,34 +87,32 @@
 			return;
 		}
 
-		var column = null,
-			len = columns.length,
-			index = 0,
-			cloneColumns = [];
+		var cloneColumns = [];
 
-		for (; index < len; index++) {
-			column = Ext.clone(columns[index]);
-			if(column.formatString){
-				column.renderer = function (value) {
-				    var ret = null;
-				    if (isNaN(value)) {
-				    	ret = value;
-				    } else {
-				    	ret = ComponentExtUtil.FormatAmount(value, column.formatString);
-				    }
-				    return ret;
-				};
-				column.align = 'right';
-			}
-			cloneColumns.push(column);
-		}
+        Ext.Array.forEach(columns, function(col, index),{
+            var column = Ext.clone(col);
+            if(column.formatString){
+                column.renderer = function (value) {
+                    var ret = null;
+                    if (isNaN(value)) {
+                        ret = value;
+                    } else {
+                        ret = ComponentExtUtil.FormatAmount(value, column.formatString);
+                    }
+                    return ret;
+                };
+                column.align = 'right';
+            }
+            cloneColumns.push(column);
+        });
+
 		return ComponentExtUtil.MergeColumns(cloneColumns);
 	};
 
 	ComponentExtUtil.buildColumn = function(){
 		this._columns = this.createGridColumns() || [];
     	this.columns = ComponentExtUtil.BuildColumns(this._columns);
-    	this.columns.splice(0,0,{xtype:'rownumberer', width:30});
+    	this.isShowRowNum && this.columns.splice(0,0,{xtype:'rownumberer', width:30});
 	},
 	ComponentExtUtil.buildStore = function(){
 		var _fields = [];
@@ -220,6 +218,7 @@ Ext.define('XIRJS.grid.base.BaseGrid', {
 		isCanExport : false,
 		showSummaryRow: false,
 		storeAutoLoad: true,
+		isShowRowNum: true,
 	},
 	/** 创建列表列定义 **/
     createGridColumns: Ext.emptyFn,

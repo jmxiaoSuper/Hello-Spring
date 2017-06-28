@@ -5,10 +5,16 @@ package com.hello.spring.custom.query.common;
  */
 public enum QueryTypeEnum {
 
-    ONLY_RECORDS(),
+    ONLY_RECORDS("1"),
 
-    ONLY_TOTALS(),
+    ONLY_TOTALS("2"),
 
-    ALL();
+    ALL("3");
+
+    private String type;
+
+    QueryTypeEnum(String type){
+        this.type = type;
+    }
 
 }

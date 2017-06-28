@@ -11,6 +11,7 @@
     <spring.version>3.2.10.RELEASE</spring.version>
     <mybatis.version>3.1.1</mybatis.version>
     <aspectj.version>1.7.4</aspectj.version>
+    <poi.version>3.12</poi.version>
     <jetty.version>7.6.15.v20140411</jetty.version>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
@@ -127,7 +128,26 @@
       <artifactId>ojdbc6</artifactId>
       <version>11.2.0.1.0</version>
     </dependency>
-
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-ooxml-schemas</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
+    <dependency>
+      <groupId>org.apache.poi</groupId>
+      <artifactId>poi-scratchpad</artifactId>
+      <version>${poi.version}</version>
+    </dependency>
   </dependencies>
 
 
