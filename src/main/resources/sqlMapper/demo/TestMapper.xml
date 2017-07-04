@@ -11,17 +11,17 @@
     <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
         select
             *
-        from ttrd_deme
+        from ttrd_demo
         where ID = #{id,jdbcType=DECIMAL}
     </select>
 
     <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
-        delete from ttrd_deme
+        delete from ttrd_demo
         where ID = #{id,jdbcType=DECIMAL}
     </delete>
 
     <insert id="insertSelective" parameterType="com.hello.spring.demo.entity.Demo" >
-        insert into ttrd_deme
+        insert into ttrd_demo
         <trim prefix="(" suffix= ")" suffixOverrides="," >
             <if test="id != null" >
                 ID,
@@ -43,7 +43,7 @@
     </insert>
 
     <select id="getRecords" resultType="java.util.HashMap" >
-        select * from ttrd_deme
+        select * from ttrd_demo
     </select>
 
     <select id="getTotals" resultType="int" >

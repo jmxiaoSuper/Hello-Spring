@@ -12,9 +12,9 @@ import java.util.Map;
 public interface CustomQueryService {
 
     /** 获取数据方法名称 */
-    String GET_RECORDS_SUFFIX = "getRecords";
+    String GET_RECORDS_SUFFIX = ".getRecords";
     /** 获取记录数名称 */
-    String GET_TOTALS_SUFFIX = "getTotals";
+    String GET_TOTALS_SUFFIX = ".getTotals";
 
     /**
      * 自定义查询列表数据

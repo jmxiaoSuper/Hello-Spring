@@ -8,29 +8,30 @@ var store = Ext.create('Ext.data.TreeStore', {
 							expanded : false,
 							children : [{
 										id : 1212121,
-										text : '自定义债券查询',
+										text : '自定义查询',
 										leaf : true,
-										jsName : 'XIRJS.trade.AdvSearchPanel'
+										jsName : 'XIRJS.domain.curd.demo.CurdDemo'
 									},{
+
 										id : 1232,
 										text : 'CURD查询',
 										leaf : true,
 										jsName : 'XIRJS.xjm.CurdPanel'
 									}]
-						}, {
-							text : '表扩展',
-							expanded : false,
-							children : [{
-										id : 23425,
-										text : '表扩展定义',
-										leaf : true,
-										jsName : 'XIRJS.widget.exttab.ExtTableDefinedMain'
-									},{
-										id : 223425,
-										text : '扩展表新增数据',
-										leaf : true,
-										jsName : 'XIRJS.widget.TableExtendPanel'
-									}]
+//						}, {
+//							text : '表扩展',
+//							expanded : false,
+//							children : [{
+//										id : 23425,
+//										text : '表扩展定义',
+//										leaf : true,
+//										jsName : 'XIRJS.widget.exttab.ExtTableDefinedMain'
+//									},{
+//										id : 223425,
+//										text : '扩展表新增数据',
+//										leaf : true,
+//										jsName : 'XIRJS.widget.TableExtendPanel'
+//									}]
 						}]
 			}
 		});
