@@ -8,7 +8,6 @@ import com.hello.spring.util.DownLoadUtil;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
-import org.springframework.validation.Validator;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -28,13 +27,31 @@ public class QueryController {
 
     @Autowired
     private CustomQueryService queryService;
+
+    @ResponseBody
+    @RequestMapping("queryMT")
+    public Object query(@RequestParam Map<String, Object> params, HttpServletRequest request){
+        Object sqlPath =  params.get("sqlPath");
+        Object queryType = params.get("queryType");
+
+        try {
+            Validate.notNull(sqlPath, "sqlPath 不能为空");
+            Validate.notNull(queryType, "queryType 不能为空");
+
+            GridDataBean data = queryService.query(QueryTypeEnum.getType(queryType.toString()), sqlPath.toString(), params);
+
+            return data;
+        } catch (Exception e) {
+            return new CommonResponse(false, "message", e.getMessage());
+        }
+    }
     /**
      * 下载Excel文件到临时目录下
      * @param params
      * @param request
      */
     @ResponseBody
-    @RequestMapping("export4Xls.action")
+    @RequestMapping("export4Xls")
     public CommonResponse export4Xls(@RequestParam Map<String, Object> params, HttpServletRequest request) {
         Object sqlPath =  params.get("sqlPath");
         Object queryType = params.get("queryType");
@@ -59,7 +76,7 @@ public class QueryController {
      * @param response
      * @throws IOException
      */
-    @RequestMapping("downLoadFile.action")
+    @RequestMapping("downLoadFile")
     public void downLoadFile(HttpServletRequest request, HttpServletResponse response)throws IOException {
         String title = request.getParameter("title");
         String downLoadFileName = request.getParameter("downLoadFileName");

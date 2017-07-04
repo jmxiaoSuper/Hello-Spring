@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hello.spring.demo.dao.TestMapper" >
+
+    <resultMap id="BaseResultMap" type="com.hello.spring.demo.entity.Demo" >
+        <id column="ID" property="id" jdbcType="DECIMAL" />
+        <result column="NAME" property="name" jdbcType="VARCHAR" />
+    </resultMap>
+
+    <!-- include 加载sql片段 -->
+    <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.math.BigDecimal" >
+        select
+            *
+        from ttrd_demo
+        where ID = #{id,jdbcType=DECIMAL}
+    </select>
+
+    <delete id="deleteByPrimaryKey" parameterType="java.math.BigDecimal" >
+        delete from ttrd_demo
+        where ID = #{id,jdbcType=DECIMAL}
+    </delete>
+
+    <insert id="insertSelective" parameterType="com.hello.spring.demo.entity.Demo" >
+        insert into ttrd_demo
+        <trim prefix="(" suffix= ")" suffixOverrides="," >
+            <if test="id != null" >
+                ID,
+            </if>
+            <if test="name != null" >
+                NAME,
+            </if>
+            CREATE_TIME
+        </trim>
+        <trim prefix="values (" suffix= ")" suffixOverrides="," >
+            <if test="id != null" >
+                #{id,jdbcType=DECIMAL},
+            </if>
+            <if test="name != null" >
+                #{name,jdbcType=VARCHAR},
+            </if>
+                to_char(systimestamp,'yyyy-mm-dd hh24:mi:ss')
+        </trim>
+    </insert>
+
+    <select id="getRecords" resultType="java.util.HashMap" >
+        select * from ttrd_demo
+    </select>
+
+    <select id="getTotals" resultType="int" >
+        select count(1) from ttrd_demo
+    </select>
+</mapper>

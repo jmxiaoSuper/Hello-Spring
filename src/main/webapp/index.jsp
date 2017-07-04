@@ -3,8 +3,7 @@
     <meta http-equiv="content-type" content="text/html; charset=UTF-8">
     <link rel="stylesheet" type="text/css" href="ext/resources/css/ext-all.css">
     <script type="text/javascript" src="ext/ext-all-dev.js"></script>
- 	<script type="text/javascript" src="ext/treemenu.js"></script>
- 	<script type="text/javascript" src="XIRJS/widget/override/xcc.js"></script>
+ 	<script type="text/javascript" src="treemenu.js"></script>
     <script type="text/javascript">
     	Ext.apply(Ext.Msg.buttonText,{
     		cancel : '取消',
