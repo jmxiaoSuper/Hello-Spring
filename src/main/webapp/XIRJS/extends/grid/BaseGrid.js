@@ -4,7 +4,7 @@
  */
 Ext.define('XIRJS.extends.grid.BaseGrid', {
 	extend : 'Ext.grid.Panel',
-	requires : ['XIRJS.utils.CommonUtil'],
+	requires : ['XIRJS.utils.CommonUtil', 'XIRJS.extends.grid.BaseUtils',],
 	sortableColumns: false,
 	superPanel: null,
 	visitNum: 0,
@@ -182,51 +182,7 @@ ComponentExtUtil.MergeColumns = function(columns){
     }
     return _columns;
 };
-/**
- * 格式化金额格式
- *
- * @param num
- * @returns string 格式化后的金额格式
- */
-ComponentExtUtil.FormatAmount = function (num, formatStrIn) {
-    if(!num) return '';
-    if(num == 'Infinity'){
-        return '无穷大';
-    }
-    if(num == '-Infinity'){
-        return '无穷小';
-    }
-    if (isNaN(num)) {
-        num = ComponentExtUtil.unFormatAmount(num);
-    }
-    if (num == '-') {
-        return num;
-    }
-    if (isNaN(num)) {
-        return '';
-    }
-    var formatStr = formatStrIn || '0,000.0000';
-    var number  = Number(num);
-    if( number < 0){
-        var fmtNumber = Ext.util.Format.number(Number(num).mul(-1), formatStr);
-        return '-' + fmtNumber;
-    }else{
-        return Ext.util.Format.number(Number(num), formatStr);
-    }
-};
 
-ComponentExtUtil.unFormatAmount = function (numStr) {
-    if (!!numStr) {
-        var num = String(numStr).replace(new RegExp(',', 'g'), '');
-        if (isNaN(num)) {
-            return numStr;
-        } else {
-            return Number(num);
-        }
-    } else {
-        return '';
-    }
-};
 /**
  * 表格处理
  */
@@ -246,7 +202,7 @@ ComponentExtUtil.BuildColumns = function(columns){
                 if (isNaN(value)) {
                     ret = value;
                 } else {
-                    ret = ComponentExtUtil.FormatAmount(value, column.formatString);
+                    ret = XIRJS.extends.grid.BaseUtils.formatAmount(value, column.formatString);
                 }
                 return ret;
             };

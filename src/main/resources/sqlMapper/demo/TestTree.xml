@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.hello.spring.demo.dao.TestTree" >
+
+    <select id="getRecords" resultType="java.util.HashMap" >
+        WITH tt_xx_tree_view AS (
+        SELECT 'root' parent_id, '001' node_id,  '亚洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT 'root' parent_id, '002' node_id,  '欧洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT 'root' parent_id, '003' node_id,  '非洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT 'root' parent_id, '004' node_id,  '美洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT 'root' parent_id, '005' node_id,  '南极洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT 'root' parent_id, '006' node_id,  '大洋洲' c_name, 'false' "leaf" FROM dual
+        UNION
+        SELECT '001' parent_id, '001001' node_id,  '中国' c_name, 'true' "leaf" FROM dual
+        UNION
+        SELECT '002' parent_id, '002001' node_id,  '英国' c_name, 'true' "leaf" FROM dual
+        UNION
+        SELECT '003' parent_id, '003001' node_id,  '埃及' c_name, 'true' "leaf" FROM dual
+        UNION
+        SELECT '004' parent_id, '004001' node_id,  '墨西哥' c_name, 'true' "leaf" FROM dual
+        UNION
+        SELECT '005' parent_id, '005001' node_id,  '企鹅' c_name, 'true' "leaf" FROM dual
+        UNION
+        SELECT '006' parent_id, '006001' node_id,  '澳大利亚' c_name, 'true' "leaf" FROM dual
+        )
+        select　* FROM tt_xx_tree_view T
+        WHERE T.PARENT_ID = #{node, jdbcType=VARCHAR}
+    </select>
+
+
+</mapper>
