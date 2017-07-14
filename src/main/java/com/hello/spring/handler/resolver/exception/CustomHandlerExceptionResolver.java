@@ -16,13 +16,13 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Service
 public class CustomHandlerExceptionResolver implements HandlerExceptionResolver {
-    public static final String REPONSE_ERROR_MESSAGE = "errorText";
-    public static final String REPONSE_ERROR_DETAIL = "errorDetail";
+    public static final String RESPONSE_ERROR_MESSAGE = "errorText";
+    public static final String RESPONSE_ERROR_DETAIL = "errorDetail";
 
     public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
         CommonResponse retObj = new CommonResponse(false,
-                REPONSE_ERROR_MESSAGE, ex.getMessage(),
-                REPONSE_ERROR_DETAIL, LogUtil.getStackTrace(ex)
+                RESPONSE_ERROR_MESSAGE, ex.getMessage(),
+                RESPONSE_ERROR_DETAIL, LogUtil.getStackTrace(ex)
         );
 
     	/* 返回通用的json格式信息 */
