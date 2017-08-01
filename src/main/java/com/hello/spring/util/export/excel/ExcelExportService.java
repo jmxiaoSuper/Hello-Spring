@@ -29,7 +29,7 @@ import org.apache.poi.xssf.usermodel.XSSFWorkbook;
  */
 public class ExcelExportService {
 
-	private final static String HEADER_FONT_NAME = "Times New Roman";
+	private final static String HEADER_FONT_NAME    = "Times New Roman";
 	private final static short FONT_HEIGHT_IN_POINT = 8;
 	
 	private Map<String, Field> fieldsMap;
@@ -40,15 +40,16 @@ public class ExcelExportService {
 	 * excel导出列定义
 	 */
 	private List<ExcelColumn> columns;
+
+	private int size;
 	
 	/**
 	 * 检查是否存在合并列头
-	 * @param columns
 	 * @return
 	 */
-	private boolean existsMerge(List<ExcelColumn> columns){
+	private boolean existsMerge(){
 		for(ExcelColumn column : columns){
-			if(StringUtils.isNoneBlank(column.getMergeText())){
+			if(StringUtils.isNotBlank(column.getMergeText())){
 				return true;
 			}
 		}
@@ -56,16 +57,15 @@ public class ExcelExportService {
 	}
 	
 	/**
-	 * 从stsart位置开始检查有多少个列需要合并
+	 * 从start位置开始检查有多少个列需要合并
 	 * @param start
 	 * @param merge
-	 * @param columns
 	 * @return
 	 */
-	private int getLastMergeIndex(int start,String merge,List<ExcelColumn> columns){
-		for(start = start + 1;start < columns.size(); start++){
-			ExcelColumn column = columns.get(start);
-			if(StringUtils.isBlank(column.getMergeText()) || !merge.equals(column.getMergeText())){
+	private int getLastMergeIndex(int start, String merge){
+		for(start = start + 1; start < this.size; start++){
+			String mergeText = columns.get(start).getMergeText();
+			if(StringUtils.isBlank(mergeText) || !merge.equals(mergeText)){
 				break;
 			}
 		}
@@ -75,15 +75,16 @@ public class ExcelExportService {
 	/**
 	 * 创建子标题
 	 * @param row
-	 * @param columns
 	 * @param start
 	 * @param last
 	 */
-	private void createSubHeader(CellStyle style,Row row ,List<ExcelColumn> columns,int start ,int last){
-		for(;start <= last ; start++){
+	private void createSubHeader(CellStyle style,Row row ,int start ,int last){
+		while (start <= last) {
 			Cell cell = row.createCell(start);
 			cell.setCellStyle(style);
 			cell.setCellValue(columns.get(start).getHeaderText());
+
+			start++;
 		}
 	}
 	
@@ -93,72 +94,107 @@ public class ExcelExportService {
 	 * @return
 	 */
 	private CellStyle createHeaderStyle(Workbook wb){
-	        CellStyle style = wb.createCellStyle();
-	        style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
-	        style.setAlignment(CellStyle.ALIGN_CENTER);
-	        // 边框
-	        style.setBorderBottom(CellStyle.BORDER_THIN); 
-	        style.setBorderLeft(CellStyle.BORDER_THIN);
-	        style.setBorderTop(CellStyle.BORDER_THIN);
-	        style.setBorderRight(CellStyle.BORDER_THIN);
-	        // 字体
-	        Font headerFont = wb.createFont();
-	        headerFont.setFontName(HEADER_FONT_NAME);
-	        headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
-	        headerFont.setFontHeightInPoints(FONT_HEIGHT_IN_POINT);
-	        style.setFont(headerFont);
-	        
-	        return style;
-	    }
+		CellStyle style = wb.createCellStyle();
+		style.setVerticalAlignment(CellStyle.VERTICAL_CENTER);
+		style.setAlignment(CellStyle.ALIGN_CENTER);
+		// 边框
+		style.setBorderBottom(CellStyle.BORDER_THIN);
+		style.setBorderLeft(CellStyle.BORDER_THIN);
+		style.setBorderTop(CellStyle.BORDER_THIN);
+		style.setBorderRight(CellStyle.BORDER_THIN);
+		// 字体
+		Font headerFont = wb.createFont();
+		headerFont.setFontName(HEADER_FONT_NAME);
+		headerFont.setBoldweight(Font.BOLDWEIGHT_BOLD);
+		headerFont.setFontHeightInPoints(FONT_HEIGHT_IN_POINT);
+		style.setFont(headerFont);
+
+		return style;
+	}
 	
 	/**
 	 * 创建标题
 	 * @param sheetName
 	 * @param wb
-	 * @param columns
 	 * @return
 	 * @throws IOException
 	 */
-	private Sheet createHeader(String sheetName,Workbook wb) throws IOException{	
+	private Sheet createHeader(String sheetName, Workbook wb) throws IOException{
+
 	    String safeName = WorkbookUtil.createSafeSheetName(sheetName);
-		Sheet sheet = wb.createSheet(safeName);
-		CellStyle cellStyle = createHeaderStyle(wb);
-		boolean isExistsMerge = existsMerge(columns);
+		Sheet sheet     = wb.createSheet(safeName);
+
+		CellStyle cellStyle   = this.createHeaderStyle(wb);
+		boolean isExistsMerge = this.existsMerge();
+
+		if(isExistsMerge){
+			buildMergeHeader(sheet, cellStyle);
+			sheet.createFreezePane(0, 2);
+		}
+		else{
+			buildNormalHeader(sheet, cellStyle);
+			sheet.createFreezePane(0, 1);
+		}
+
+		return sheet;
+	}
+
+	/**
+	 * 构建正常的标题栏
+	 * @param sheet
+	 * @param cellStyle
+	 */
+	private void buildNormalHeader(Sheet sheet, CellStyle cellStyle){
 		Row row0 = sheet.createRow(0);
-		Row row1 = isExistsMerge ? sheet.createRow(1) : null;
+
 		int c = 0;
-		while(c < columns.size()){
+		while(c < this.size){
 			Cell cell = row0.createCell(c);
 			cell.setCellStyle(cellStyle);
-			if(!isExistsMerge){
-				cell.setCellValue(columns.get(c).getHeaderText());
-				c++;
-			}else{
-				String merge = columns.get(c).getMergeText();
-				if(StringUtils.isNoneBlank(merge)){
-					cell.setCellValue(merge);
-					int lastCol = getLastMergeIndex(c,merge,columns);
-				    CellRangeAddress range = new CellRangeAddress(0, 0, c, lastCol);
-				    for(int i = c + 1; i <= lastCol; i++){
-				    	Cell splitCell = row0.createCell(i);
-				    	splitCell.setCellStyle(cellStyle);
-				    }
-				    sheet.addMergedRegion(range);
-				    createSubHeader(cellStyle,row1,columns,c,lastCol);
-				    c = lastCol + 1;
-				}else{
-					cell.setCellValue(columns.get(c).getHeaderText());
-					CellRangeAddress range = new CellRangeAddress(0, 1, c, c);
-					sheet.addMergedRegion(range);
-					Cell splitCell = row1.createCell(c);
-			    	splitCell.setCellStyle(cellStyle);
-					c++;
+			cell.setCellValue(columns.get(c).getHeaderText());
+
+			c++;
+		}
+	}
+
+	/**
+	 * 构建有合并列的标题栏
+	 * @param sheet
+	 * @param cellStyle
+	 */
+	private void buildMergeHeader(Sheet sheet, CellStyle cellStyle){
+		Row row0 = sheet.createRow(0);
+		Row row1 = sheet.createRow(1);
+
+		int c = 0;
+		while(c < this.size){
+			Cell cell = row0.createCell(c);
+			cell.setCellStyle(cellStyle);
+
+			String merge = columns.get(c).getMergeText();
+			if(StringUtils.isNotBlank(merge)){
+
+				cell.setCellValue(merge);
+				int lastCol = this.getLastMergeIndex(c, merge);
+				CellRangeAddress range = new CellRangeAddress(0, 0, c, lastCol);
+				for(int i = c + 1; i <= lastCol; i++){
+					Cell splitCell = row0.createCell(i);
+					splitCell.setCellStyle(cellStyle);
 				}
+				sheet.addMergedRegion(range);
+				createSubHeader(cellStyle, row1, c, lastCol);
+				c = lastCol + 1;
+			}
+			else{
+				cell.setCellValue(columns.get(c).getHeaderText());
+				CellRangeAddress range = new CellRangeAddress(0, 1, c, c);
+				sheet.addMergedRegion(range);
+				Cell splitCell = row1.createCell(c);
+				splitCell.setCellStyle(cellStyle);
+
+				c++;
 			}
 		}
-		if(isExistsMerge) sheet.createFreezePane(0, 2);
-		else sheet.createFreezePane(0, 1);
-		return sheet;
 	}
 	
 	/**
@@ -167,35 +203,34 @@ public class ExcelExportService {
 	 * @param fieldName
 	 * @return
 	 */
-	private Object getFieldValue(Object data,String fieldName){
-		Object value = null;
+	private Object getFieldValue(Object data, String fieldName){
 		if(data instanceof Map){
 			Object obj = ((Map)data).get(fieldName);
-			value = obj == null ? "" : obj.toString();
-		}else{
-			Field field = null;
-			try{
-				 if(fieldsMap == null || !fieldsMap.containsKey(fieldName)){
-					 if(fieldsMap == null) fieldsMap = new HashMap<String, Field>();
-					 field = data.getClass().getDeclaredField(fieldName);
-					 field.setAccessible(true);
-					 fieldsMap.put(fieldName, field);
-				 }
-			    field = fieldsMap.get(fieldName);
-					
-			} catch (NoSuchFieldException e) {
-				throw new RuntimeException(e);
-			};
-		    
-		    try {
-				value = field.get(data);
-			} catch (IllegalArgumentException e) {
-				throw new RuntimeException(e);
-			} catch (IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
+			return obj == null ? "" : obj.toString();
 		}
-		return value;
+
+		Field field = null;
+		try{
+			 if(fieldsMap == null || !fieldsMap.containsKey(fieldName)){
+				 if(fieldsMap == null) fieldsMap = new HashMap<String, Field>();
+				 field = data.getClass().getDeclaredField(fieldName);
+				 field.setAccessible(true);
+				 fieldsMap.put(fieldName, field);
+			 }
+			field = fieldsMap.get(fieldName);
+
+		} catch (NoSuchFieldException e) {
+			throw new RuntimeException(e);
+		}
+
+		try {
+			return field.get(data);
+		} catch (IllegalArgumentException e) {
+			throw new RuntimeException(e);
+		} catch (IllegalAccessException e) {
+			throw new RuntimeException(e);
+		}
+
 	}
 
 	/**
@@ -230,20 +265,23 @@ public class ExcelExportService {
 	 * @param column
 	 */
 	private void setDataCellValue(Cell cell,Object o,ExcelColumn column){
-		boolean isNumberic = false;
+		boolean isNumber = false;
 		if(o instanceof Integer ||
 				o instanceof Double ||
 				o instanceof Long ||
-				o instanceof BigDecimal){
-			isNumberic = true;
+				o instanceof BigDecimal ||
+				StringUtils.isNotBlank(column.getFormatString())){
+
+			isNumber = true;
 		}
 		
 		CellStyle st = getBodyCellStyle(cell.getSheet().getWorkbook(), StringUtils.isEmpty(column.getFormatString()) ? "*" : column.getFormatString());
 		cell.setCellStyle(st);
+
 		if(o == null){
 			cell.setCellValue("");
 		}
-		else if(isNumberic) {
+		else if(isNumber) {
 			cell.setCellValue(Double.parseDouble(o.toString()));
 		}
 		else {
@@ -257,12 +295,13 @@ public class ExcelExportService {
 	 * @param datas
 	 * @param drill
 	 */
-	private void writeData(Sheet sheet,List<?> datas,ExcelDrill drill){
+	private void writeData(Sheet sheet, List<?> datas , ExcelDrill drill){
 		int lastRow = sheet.getLastRowNum();
+
 		for(Object data : datas){
 			if(lastRow > 10000) break;
 			Row row = sheet.createRow(++lastRow);
-			for(int i = 0; i < columns.size(); i++){
+			for(int i = 0; i < this.size; i++){
 				ExcelColumn column = columns.get(i);
 				String fieldName = column.getFieldName();
 				Object value = null;
@@ -278,7 +317,7 @@ public class ExcelExportService {
 					int from = lastRow;
 					for(Object detail : details){
 						Row row4Detail = sheet.createRow(++lastRow);
-						for(int i = 0; i < columns.size(); i++){
+						for(int i = 0; i < this.size; i++){
 							ExcelColumn column = columns.get(i);
 							String fieldName = column.getFieldName();
 							Object value = null;
@@ -298,7 +337,10 @@ public class ExcelExportService {
 	
 	public ExcelExportService(List<ExcelColumn> columns){
 		this.columns = columns;
-		cellStylesMap = new HashMap<String, CellStyle>(); 
+		this.size    = columns.size();
+
+		this.cellStylesMap = new HashMap<String, CellStyle>();
+		this.fieldsMap     = new HashMap<String, Field>();
 	}
 	
 	/**
@@ -312,20 +354,23 @@ public class ExcelExportService {
 	 * @param os
 	 * 	输出流
 	 */
-	public void export(String sheetName,List<?> ds,boolean isXlsx,ExcelDrill drill,OutputStream os){
+	public void export(String sheetName, List<?> ds, boolean isXlsx, ExcelDrill drill, OutputStream os){
 		Workbook wb = null;
+
 		try{
 			wb = isXlsx ? new XSSFWorkbook() : new HSSFWorkbook();
-			try {
-				Sheet sheet= createHeader(sheetName, wb);
-				writeData(sheet, ds, drill);
-				for(int i = 0 ;i < this.columns.size();i++){
-					sheet.autoSizeColumn(i);
-				}
-				wb.write(os);
-			} catch (IOException e) {
-				throw new RuntimeException(e);
+
+			Sheet sheet = createHeader(sheetName, wb);
+			writeData(sheet, ds, drill);
+
+			for(int i = 0 ;i < this.size;i++){
+				sheet.autoSizeColumn(i);
 			}
+			wb.write(os);
+			os.flush();
+
+		} catch (IOException e) {
+			throw new RuntimeException(e);
 		}finally{
 			if(wb != null){
 				try {
