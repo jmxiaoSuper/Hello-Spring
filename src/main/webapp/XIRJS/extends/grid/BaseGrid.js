@@ -21,6 +21,7 @@ Ext.define('XIRJS.extends.grid.BaseGrid', {
 		showSummaryRow: false,
 		storeAutoLoad: true,
 		isShowRowNum: true,
+		sortableColumns: false,
 	},
 	/** 创建列表列定义 **/
     createGridColumns: Ext.emptyFn,

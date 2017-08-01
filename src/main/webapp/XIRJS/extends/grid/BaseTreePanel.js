@@ -16,6 +16,7 @@ Ext.define('XIRJS.widget.base.panel.BaseTreePanel',{
 		defaultRootId: 'root',
 		treecolumnDataIndex: 'id',
 		treecolumnHeader: '',
+		sortableColumns: false
 	},
 	/** 创建列表列定义 **/
 	createGridColumns: Ext.emptyFn,
