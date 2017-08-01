@@ -16,6 +16,8 @@ import java.util.UUID;
 public class DownLoadUtil {
 
     public static String COMM_FILE_TEMP_PATH = File.separatorChar + "downLoadFileTempPath" + File.separatorChar;
+
+    public static String UP_LOAD_FILE_TEMP_PATH = File.separator + "upLoadFileTempPath" + File.separator;
     /**
      * 导出excel到临时目录下
      * @param context

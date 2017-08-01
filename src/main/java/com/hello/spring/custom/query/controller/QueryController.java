@@ -11,9 +11,13 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.net.URLEncoder;
 import java.util.Map;
@@ -84,5 +88,23 @@ public class QueryController {
         response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(title, "UTF-8") + ".xls");
 
         DownLoadUtil.downLoadFileName(response.getOutputStream(), request.getSession().getServletContext(), downLoadFileName, true);
+    }
+
+    @ResponseBody
+    @RequestMapping("uploadFile")
+    public CommonResponse uploadFile(@RequestParam("upFile")CommonsMultipartFile uploadFile, HttpServletRequest request){
+        String path = request.getSession().getServletContext().getRealPath("/");
+        String completeFileName = path + DownLoadUtil.UP_LOAD_FILE_TEMP_PATH + uploadFile.getName();
+
+        try {
+            File up = new File(completeFileName);
+            FileOutputStream fot = new FileOutputStream(up);
+            BufferedOutputStream out = new BufferedOutputStream(fot);
+            out.write(uploadFile.getBytes());
+            out.flush();
+        } catch (Exception e) {
+            return new CommonResponse(false, e.getMessage());
+        }
+        return new CommonResponse(true, "上次成功");
     }
 }
