@@ -4,6 +4,7 @@ import com.hello.spring.common.CommonResponse;
 import com.hello.spring.custom.query.bean.GridDataBean;
 import com.hello.spring.custom.query.common.QueryTypeEnum;
 import com.hello.spring.custom.query.service.CustomQueryService;
+import com.hello.spring.helper.SpringHelper;
 import com.hello.spring.util.DownLoadUtil;
 import org.apache.commons.lang.Validate;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -88,21 +89,25 @@ public class QueryController {
         DownLoadUtil.downLoadFileName(response.getOutputStream(), downLoadFileName, true);
     }
 
+    /**
+     * 上传文件到临时目录
+     * @param uploadFile
+     * @param request
+     * @return
+     */
     @ResponseBody
     @RequestMapping("uploadFile")
     public CommonResponse uploadFile(@RequestParam("upFile")CommonsMultipartFile uploadFile, HttpServletRequest request){
-        String path = request.getSession().getServletContext().getRealPath("/");
-        String completeFileName = path + DownLoadUtil.UP_LOAD_FILE_TEMP_PATH + uploadFile.getName();
+        String path = SpringHelper.getServletContext().getRealPath("/");
+        String completeFileName = path + DownLoadUtil.UP_LOAD_FILE_TEMP_PATH + uploadFile.getOriginalFilename();
 
-        try {
-            File up = new File(completeFileName);
-            FileOutputStream fot = new FileOutputStream(up);
-            BufferedOutputStream out = new BufferedOutputStream(fot);
-            out.write(uploadFile.getBytes());
-            out.flush();
-        } catch (Exception e) {
-            return new CommonResponse(false, e.getMessage());
+        try{
+            File file = new File(completeFileName);
+            DownLoadUtil.writeFile(uploadFile.getInputStream(), file);
+            return new CommonResponse(true);
+
+        }catch (Exception e) {
+            return new CommonResponse(false, "errorMsg", e.getMessage());
         }
-        return new CommonResponse(true, "上次成功");
     }
 }

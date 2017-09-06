@@ -57,7 +57,7 @@ Ext.define('XIRJS.domain.curd.demo.CurdDemo',{
         					var form = this.up('form').getForm();
         					if (form.isValid()) {
         						form.submit({
-        							url : 'xcc_DataInitController/upload.action',
+        							url : 'queryAction/uploadFile.action',
         							waitMsg : '正在上传您的文件，请耐心等候...',
         							success : function(form, action) {
         								Ext.Msg.alert('提示信息', "文件保存成功");

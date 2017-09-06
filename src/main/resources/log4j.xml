@@ -12,7 +12,7 @@
 		<!--日记记录的优先级priority，优先级由高到低分为 OFF ,FATAL ,ERROR ,WARN ,INFO ,DEBUG ,ALL。 
 			Log4j建议只使用FATAL ,ERROR ,WARN ,INFO ,DEBUG这五个级别 -->
 		<filter class="org.apache.log4j.varia.LevelRangeFilter">
-			<param name="levelMin" value="info" />
+			<param name="levelMin" value="debug" />
 			<param name="levelMax" value="error" />
 			<param name="AcceptOnMatch" value="true" />
 		</filter>
@@ -44,7 +44,7 @@
 
 
 	<root>
-		<priority value="info" />
+		<priority value="debug" />
 		<appender-ref ref="outputConsole" />
 
 	</root>

@@ -108,4 +108,39 @@ public class DownLoadUtil {
         }
 
     }
+
+    /**
+     * 输入流写入文件中
+     * @param ins
+     * @param file
+     */
+    public static void writeFile(InputStream ins, File file){
+
+        BufferedInputStream bis = null;
+        BufferedOutputStream bos = null;
+        try {
+
+            bis = new BufferedInputStream(ins);
+            bos = new BufferedOutputStream(new FileOutputStream(file));
+
+            byte[] buff = new byte[2048];
+            int bytesRead;
+
+            while(-1 != (bytesRead = bis.read(buff, 0, buff.length))) {
+                bos.write(buff,0,bytesRead);
+            }
+            bos.flush();
+        } catch(Exception e) {
+            throw new RuntimeException(e);
+        } finally {
+            try {
+                if (bis != null)
+                    bis.close();
+                if (bos != null)
+                    bos.close();
+            } catch (Exception e2) {
+                throw new RuntimeException(e2);
+            }
+        }
+    }
 }
