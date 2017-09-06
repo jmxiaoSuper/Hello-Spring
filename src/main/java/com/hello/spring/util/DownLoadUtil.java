@@ -1,5 +1,6 @@
 package com.hello.spring.util;
 
+import com.hello.spring.helper.SpringHelper;
 import com.hello.spring.util.export.excel.ExcelColumn;
 import com.hello.spring.util.export.excel.ExcelDrill;
 import com.hello.spring.util.export.excel.ExcelExportService;
@@ -20,8 +21,6 @@ public class DownLoadUtil {
     public static String UP_LOAD_FILE_TEMP_PATH = File.separator + "upLoadFileTempPath" + File.separator;
     /**
      * 导出excel到临时目录下
-     * @param context
-     * 	web容器上下文
      * @param columns
      * 	列定义
      * @param ds
@@ -29,12 +28,12 @@ public class DownLoadUtil {
      * @param drill
      * 	数据钻取接口
      */
-    public static String export2Excel(ServletContext context, List<ExcelColumn> columns, List<?> ds, ExcelDrill<?> drill){
+    public static String export2Excel(List<ExcelColumn> columns, List<?> ds, ExcelDrill<?> drill){
         Validate.notEmpty(columns,"列定义columns不允许为空！");
         Validate.notEmpty(ds,"数据源ds不允许为空！");
 
         String title = UUID.randomUUID() + ".xls";
-        OutputStream os = DownLoadUtil.getWebFileOutputStream(context, title);
+        OutputStream os = DownLoadUtil.getWebFileOutputStream(title);
 
         ExcelExportService service = new ExcelExportService(columns);
         service.export(title, ds, false, drill, os);
@@ -44,14 +43,12 @@ public class DownLoadUtil {
 
     /**
      * 获取临时文件输出流
-     * @param context
-     * 	web容器上下文
      * @param fileName
      * 	临时文件名称
      * @return
      */
-    public static OutputStream getWebFileOutputStream(ServletContext context, String fileName){
-        String path = context.getRealPath("/");
+    public static OutputStream getWebFileOutputStream(String fileName){
+        String path = SpringHelper.getServletContext().getRealPath("/");
         String completeFileName = path + DownLoadUtil.COMM_FILE_TEMP_PATH + fileName;
         File file = new File(completeFileName);
 
@@ -73,15 +70,13 @@ public class DownLoadUtil {
      * 下载临时文件
      * @param os
      * 	输出流
-     * @param context
-     * 	web容器上下文
      * @param fileName
      * 	临时文件名称
      * @param isDelete
      * 	下载完之后是否删除
      */
-    public static void downLoadFileName(OutputStream os, ServletContext context, String fileName, boolean isDelete){
-        String path = context.getRealPath("/");
+    public static void downLoadFileName(OutputStream os, String fileName, boolean isDelete){
+        String path = SpringHelper.getServletContext().getRealPath("/");
         String completeFileName = path + DownLoadUtil.COMM_FILE_TEMP_PATH + fileName;
         File file = new File(completeFileName);
 

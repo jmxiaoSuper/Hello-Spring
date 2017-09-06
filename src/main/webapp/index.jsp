@@ -4,6 +4,8 @@
     <link rel="stylesheet" type="text/css" href="ext/resources/css/ext-all.css">
     <script type="text/javascript" src="ext/ext-all-debug.js"></script>
     <script type="text/javascript" src="ext/ext-theme-gray.js"></script>
+    <script type="text/javascript" src="mock/mock.js" ></script>
+    <script type="text/javascript" src="mock/mockRule.js" ></script>
  	<script type="text/javascript" src="treemenu.js"></script>
     <script type="text/javascript">
     	Ext.apply(Ext.Msg.buttonText,{

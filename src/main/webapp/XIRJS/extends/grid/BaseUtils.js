@@ -8,7 +8,7 @@ Ext.define('XIRJS.extends.grid.BaseUtils', {
 	 * @returns string 格式化后的金额格式
 	 */
 	formatAmount : function (num, formatStrIn) {
-		if(!num) return '';
+		if(Ext.isEmpty(num)) return '';
 	    if(num == 'Infinity'){
 			return '无穷大';
 		}

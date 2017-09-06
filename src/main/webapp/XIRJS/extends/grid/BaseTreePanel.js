@@ -2,7 +2,7 @@
 /**
  * TreePanel 简易封装实现
  */
-Ext.define('XIRJS.widget.base.panel.BaseTreePanel',{
+Ext.define('XIRJS.extends.grid.BaseTreePanel',{
 	extend : 'Ext.tree.Panel',
 	requires: ['XIRJS.extends.grid.BaseUtils', 'XIRJS.utils.CommonUtil'],
 	rootVisible: false,

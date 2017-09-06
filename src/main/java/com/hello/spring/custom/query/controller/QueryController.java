@@ -66,7 +66,7 @@ public class QueryController {
 
             GridDataBean data = queryService.query(QueryTypeEnum.valueOf(queryType.toString()), sqlPath.toString(), params);
 
-            String fileName = DownLoadUtil.export2Excel(request.getSession().getServletContext(), null, data.getItems(), null);
+            String fileName = DownLoadUtil.export2Excel(null, data.getItems(), null);
             return new CommonResponse(true, "message", fileName);
         } catch (Exception e) {
             return new CommonResponse(false, "message", e.getMessage());
@@ -76,18 +76,16 @@ public class QueryController {
 
     /**
      * 从临时目录下载文件到浏览器
-     * @param request
      * @param response
      * @throws IOException
      */
     @RequestMapping("downLoadFile")
-    public void downLoadFile(HttpServletRequest request, HttpServletResponse response)throws IOException {
-        String title = request.getParameter("title");
-        String downLoadFileName = request.getParameter("downLoadFileName");
+    public void downLoadFile(@RequestParam("title") String title, @RequestParam("downLoadFileName") String downLoadFileName,
+                             HttpServletResponse response)throws IOException {
         response.setContentType("application/msexcel");
         response.setHeader("Content-disposition", "attachment; filename=" + URLEncoder.encode(title, "UTF-8") + ".xls");
 
-        DownLoadUtil.downLoadFileName(response.getOutputStream(), request.getSession().getServletContext(), downLoadFileName, true);
+        DownLoadUtil.downLoadFileName(response.getOutputStream(), downLoadFileName, true);
     }
 
     @ResponseBody

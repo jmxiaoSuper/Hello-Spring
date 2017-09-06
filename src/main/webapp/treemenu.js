@@ -1,4 +1,5 @@
-var _treeMenuStore = Ext.create('Ext.data.TreeStore', {
+(function(){
+_treeMenuStore = Ext.create('Ext.data.TreeStore', {
         fields : ['jsName', 'id', 'text', 'leaf'],
         root : {// 树状图有且只有一个树根
             expanded : false,// 这树状图是可以打开叶子的
@@ -11,12 +12,6 @@ var _treeMenuStore = Ext.create('Ext.data.TreeStore', {
                                     leaf : true,
                                     jsName : 'XIRJS.domain.curd.demo.CurdDemo'
                                 },{
-
-                                    id : 1232,
-                                    text : 'CURD查询',
-                                    leaf : true,
-                                    jsName : 'XIRJS.xjm.CurdPanel'
-                                },{
                                     id : 12367,
                                     text : '树形列表',
                                     leaf : true,
@@ -25,3 +20,4 @@ var _treeMenuStore = Ext.create('Ext.data.TreeStore', {
                     }]
         }
     });
+}())
